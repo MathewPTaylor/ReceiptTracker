@@ -32,3 +32,10 @@ async def greet_user(request: UserRequest):
     }
 
 
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+# @app.post("/api/login")
+# async def login_user(request: LoginRequest):
+#
