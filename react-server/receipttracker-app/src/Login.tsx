@@ -6,6 +6,10 @@ interface LoginRequest {
   password: string;
 }
 
+interface LoginProps {
+  onLoginSuccess: (state: boolean) => void;
+}
+
 interface LoginResponse {
   access_token: string;
   token_type: string;
@@ -18,7 +22,7 @@ interface ApiErrorResponse {
   detail?: string;
 }
 
-function App() {
+function Login({ onLoginSuccess }: LoginProps) {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -58,6 +62,7 @@ function App() {
 
       const data: LoginResponse = await res.json();
       setToken(data.access_token);
+      onLoginSuccess(true); // Call the success callback
       setPassword(''); // Clear password from memory on success
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -158,4 +163,4 @@ function App() {
   );
 }
 
-export default App;
+export default Login;
