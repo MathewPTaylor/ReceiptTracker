@@ -39,6 +39,8 @@ function App() {
       password,
     };
 
+    alert(JSON.stringify(payload));
+
     try {
       const res = await fetch('http://localhost:8000/api/login', {
         method: 'POST',
@@ -109,7 +111,7 @@ function App() {
               required
               value={password}
               onChange={handlePasswordChange}
-              placeholder="••••••••"
+              placeholder="Enter password"
               style={{ padding: '10px', flex: 1, borderRadius: '4px', border: '1px solid #cbd5e1' }}
             />
             <button
