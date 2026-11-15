@@ -6,7 +6,7 @@ import Home from './Home.tsx';
 
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);  // TODO change back to false 
   return (
     <>
       <div style={{display: !isLoggedIn? 'block': 'none'}}>

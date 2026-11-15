@@ -5,6 +5,7 @@ interface UploadResponse {
   content_type: string;
   size_bytes: number;
   message: string;
+  ocr_text?: string;
 }
 
 export default function ImageCapture() {
@@ -14,11 +15,9 @@ export default function ImageCapture() {
   const [result, setResult] = useState<UploadResponse | null>(null);
   const [error, setError] = useState<string>('');
 
-  // Separate refs for "Camera" vs "File Library / Desktop"
   const cameraInputRef = useRef<HTMLInputElement | null>(null);
   const galleryInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Clean up object URLs to prevent memory leaks on mobile Safari
   useEffect(() => {
     return () => {
       if (previewUrl) {
@@ -34,22 +33,18 @@ export default function ImageCapture() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Basic client-side validation (iOS HEIC photos sometimes report empty type or image/heic)
     const isImage = file.type.startsWith('image/') || /\.(heic|heif|jpg|jpeg|png|webp)$/i.test(file.name);
     if (!isImage) {
       setError('Please select a valid image file.');
       return;
     }
 
-    // Revoke previous preview before creating a new one
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
     }
 
     setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
-
-    // Reset input value so the user can re-take or re-select the exact same file if needed
     e.target.value = '';
   };
 
@@ -70,14 +65,12 @@ export default function ImageCapture() {
     setUploading(true);
     setError('');
 
-    // Use FormData (never JSON.stringify) for binary file uploads
     const formData = new FormData();
     formData.append('file', selectedFile);
 
     try {
       const res = await fetch('http://localhost:8000/api/upload-image', {
         method: 'POST',
-        // Do NOT manually set 'Content-Type'; the browser sets it automatically with the multipart boundary
         body: formData,
       });
 
@@ -97,9 +90,8 @@ export default function ImageCapture() {
 
   return (
     <div style={{ maxWidth: '440px', margin: '32px auto', padding: '20px', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }}>
-      <h2 style={{ marginTop: 0 }}>Capture or Upload Image</h2>
+      <h2 style={{ marginTop: 0 }}>Capture or Upload Image for OCR</h2>
 
-      {/* Hidden Input 1: Direct Camera Launch on Mobile (WebKit / Chrome) */}
       <input
         ref={cameraInputRef}
         type="file"
@@ -109,7 +101,6 @@ export default function ImageCapture() {
         style={{ display: 'none' }}
       />
 
-      {/* Hidden Input 2: Desktop File Picker OR Mobile Photo Library */}
       <input
         ref={galleryInputRef}
         type="file"
@@ -118,22 +109,13 @@ export default function ImageCapture() {
         style={{ display: 'none' }}
       />
 
-      {/* Mobile-friendly touch buttons (min 44px height for iOS Safari) */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
         <button
           type="button"
           onClick={() => cameraInputRef.current?.click()}
           style={{
-            flex: 1,
-            minHeight: '48px',
-            padding: '12px',
-            background: '#2563eb',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '16px',
-            fontWeight: 600,
-            cursor: 'pointer',
+            flex: 1, minHeight: '48px', padding: '12px', background: '#2563eb',
+            color: '#fff', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 600, cursor: 'pointer',
           }}
         >
           Take Photo
@@ -143,23 +125,14 @@ export default function ImageCapture() {
           type="button"
           onClick={() => galleryInputRef.current?.click()}
           style={{
-            flex: 1,
-            minHeight: '48px',
-            padding: '12px',
-            background: '#f1f5f9',
-            color: '#0f172a',
-            border: '1px solid #cbd5e1',
-            borderRadius: '8px',
-            fontSize: '16px',
-            fontWeight: 600,
-            cursor: 'pointer',
+            flex: 1, minHeight: '48px', padding: '12px', background: '#f1f5f9',
+            color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '16px', fontWeight: 600, cursor: 'pointer',
           }}
         >
           Choose File
         </button>
       </div>
 
-      {/* Image Preview & Upload Form */}
       {previewUrl && selectedFile && (
         <form onSubmit={handleUpload} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', background: '#f8fafc' }}>
@@ -178,18 +151,11 @@ export default function ImageCapture() {
               type="submit"
               disabled={uploading}
               style={{
-                flex: 2,
-                minHeight: '48px',
-                background: uploading ? '#94a3b8' : '#16a34a',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '8px',
-                fontSize: '16px',
-                fontWeight: 600,
-                cursor: uploading ? 'not-allowed' : 'pointer',
+                flex: 2, minHeight: '48px', background: uploading ? '#94a3b8' : '#16a34a',
+                color: '#fff', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 600, cursor: uploading ? 'not-allowed' : 'pointer',
               }}
             >
-              {uploading ? 'Uploading...' : 'Upload Image'}
+              {uploading ? 'Processing OCR...' : 'Run Gemini OCR'}
             </button>
 
             <button
@@ -197,14 +163,8 @@ export default function ImageCapture() {
               onClick={handleClear}
               disabled={uploading}
               style={{
-                flex: 1,
-                minHeight: '48px',
-                background: '#fff',
-                color: '#dc2626',
-                border: '1px solid #fecaca',
-                borderRadius: '8px',
-                fontSize: '16px',
-                cursor: 'pointer',
+                flex: 1, minHeight: '48px', background: '#fff', color: '#dc2626',
+                border: '1px solid #fecaca', borderRadius: '8px', fontSize: '16px', cursor: 'pointer',
               }}
             >
               Clear
@@ -220,9 +180,14 @@ export default function ImageCapture() {
       )}
 
       {result && (
-        <div style={{ marginTop: '16px', padding: '12px', background: '#f0fdf4', color: '#166534', borderRadius: '8px', fontSize: '14px' }}>
-          <strong>Upload Complete!</strong>
-          <p style={{ margin: '6px 0 0' }}>{result.message}</p>
+        <div style={{ marginTop: '16px', padding: '14px', background: '#f0fdf4', color: '#166534', borderRadius: '8px', fontSize: '14px' }}>
+          <strong>OCR Complete!</strong>
+          <p style={{ margin: '6px 0 8px' }}>{result.message}</p>
+          {result.ocr_text && (
+            <div style={{ marginTop: '8px', background: '#ffffff', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1', whiteSpace: 'pre-wrap', color: '#0f172a', fontFamily: 'monospace', fontSize: '13px', maxHeight: '200px', overflowY: 'auto' }}>
+              {result.ocr_text}
+            </div>
+          )}
         </div>
       )}
     </div>

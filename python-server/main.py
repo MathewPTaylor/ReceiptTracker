@@ -1,12 +1,15 @@
 import os
 from pymongo import AsyncMongoClient
 
+import base64
 import secrets
 from fastapi import FastAPI, status, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic_models import *
 from dotenv import load_dotenv
+from google import genai
+from google.genai import types
 
 app = FastAPI()
 # Allow requests from the React dev server (typically port 5173 for Vite or 3000 for CRA)
@@ -19,6 +22,8 @@ app.add_middleware(
 )
 load_dotenv()
 MONGODB_URI = os.getenv("MONGODB_URI")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+print("gemini api ",GEMINI_API_KEY)
 
 
 @app.on_event("startup")
@@ -81,6 +86,10 @@ async def login(credentials: LoginRequest):
     }
 
 
+
+# Initialize the Gemini client (automatically picks up GEMINI_API_KEY from environment)
+client = genai.Client()
+
 @app.post("/api/upload-image")
 async def upload_image(file: UploadFile = File(...)):
     print(file)
@@ -88,16 +97,32 @@ async def upload_image(file: UploadFile = File(...)):
     allowed_types = {"image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"}
     if file.content_type not in allowed_types and not (file.filename or "").lower().endswith((".heic", ".heif")):
         raise HTTPException(status_code=400, detail=f"Unsupported file type: {file.content_type}")
-
+    
     contents = await file.read()
-
-    # Optional: Save to disk or pass `contents` to S3 / MongoDB GridFS / ML model
-    # with open(f"{file.filename}", "wb") as f:
-    #     f.write(contents)
+    
+    try:
+        # Send the image bytes and prompt to Gemini for OCR extraction
+        response = client.interactions.create(
+            model="gemini-2.5-flash",
+            input=[
+                {"type": "text", "text": "Perform accurate OCR on this image. Extract all visible text exactly as it appears."},
+                {
+                    "type": "image",
+                    "data": base64.b64encode(contents).decode('utf-8'),
+                    "mime_type": "image/jpeg"
+                }
+            ]
+        )
+        extracted_text = response.text
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Gemini OCR processing failed: {str(e)}"
+        )
 
     return {
         "filename": file.filename,
         "content_type": file.content_type,
         "size_bytes": len(contents),
-        "message": f"Received {file.filename} ({len(contents)} bytes)",
+        "message": f"Successfully extracted text from {file.filename}",
+        "ocr_text": extracted_text,
     }
