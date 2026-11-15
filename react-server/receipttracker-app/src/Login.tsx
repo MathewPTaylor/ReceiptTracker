@@ -85,7 +85,7 @@ function Login({ onLoginSuccess }: LoginProps) {
 
   return (
     <div style={{ maxWidth: '380px', margin: '80px auto', fontFamily: 'sans-serif', padding: '24px', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
-      <h2 style={{ marginTop: 0, marginBottom: '20px' }}>Sign In</h2>
+      <h2 style={{ marginTop: 0, marginBottom: '20px' }}>Log In</h2>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
