@@ -41,7 +41,7 @@ function App() {
         <div style={{display: pageNo === account ? 'block' : 'none'}}>
           <Account></Account>
         </div>
-        
+
         <Navbar onNavClickFunc={setPageNo} curPageNo={pageNo} ></Navbar>
       </div>
     </>

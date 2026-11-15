@@ -45,7 +45,7 @@ function Login({ onLoginSuccess }: LoginProps) {
 
     alert(JSON.stringify(payload));
 
-    try {
+    try { 
       const res = await fetch('http://localhost:8000/api/login', {
         method: 'POST',
         headers: {
