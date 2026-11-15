@@ -2,7 +2,7 @@ import os
 from pymongo import AsyncMongoClient
 
 import secrets
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, status, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic_models import *
@@ -78,4 +78,26 @@ async def login(credentials: LoginRequest):
         "access_token": secrets.token_hex(32),
         "token_type": "bearer",
         "user": {"email": credentials.email.lower()},
+    }
+
+
+@app.post("/api/upload-image")
+async def upload_image(file: UploadFile = File(...)):
+    print(file)
+    # Validate file type (include HEIC/HEIF for iPhones)
+    allowed_types = {"image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"}
+    if file.content_type not in allowed_types and not (file.filename or "").lower().endswith((".heic", ".heif")):
+        raise HTTPException(status_code=400, detail=f"Unsupported file type: {file.content_type}")
+
+    contents = await file.read()
+
+    # Optional: Save to disk or pass `contents` to S3 / MongoDB GridFS / ML model
+    # with open(f"{file.filename}", "wb") as f:
+    #     f.write(contents)
+
+    return {
+        "filename": file.filename,
+        "content_type": file.content_type,
+        "size_bytes": len(contents),
+        "message": f"Received {file.filename} ({len(contents)} bytes)",
     }
