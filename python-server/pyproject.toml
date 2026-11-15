@@ -5,6 +5,9 @@ requires-python = ">=3.14"
 dependencies = [
     "fastapi[standard]>=0.163.0",
     "google-genai>=3.3.0",
+    "langchain-core>=1.8.0",
+    "langchain-google-genai>=4.5.0",
+    "langgraph>=1.2.22",
     "motor>=3.7.1",
     "pwdlib[argon2]>=0.4.0",
     "pydantic[email]>=2.14.3",

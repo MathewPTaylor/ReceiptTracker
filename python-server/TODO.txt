@@ -1,7 +1,6 @@
 TODO:
 2. Possibly add routing for React
 3. Make UI look better and more phone like
-4.
 
 
 1. Add pydantic class to structured output of LLM
