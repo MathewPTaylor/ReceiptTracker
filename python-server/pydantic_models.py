@@ -57,3 +57,8 @@ class Receipt(BaseModel):
         # Allows you to instantiate the model using either snake_case or the JSON camelCase keys
         "populate_by_name": True
     }
+    
+class Response(BaseModel):
+    isReceipt: bool = Field(alias="isReceipt")
+    receipts: Receipt | None = Field(alias="receipt")
+    error: str | None = Field(default=None, alias="error", description="Error message if the input is not a receipt")

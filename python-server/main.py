@@ -156,11 +156,12 @@ async def upload_image(request: Request, file: UploadFile = File(...)):
     contents = await file.read()
     
     try:
+        print("First time kinda nervous.")
         # Send the image bytes and prompt to Gemini for OCR extraction
         response = client.interactions.create(
             model="gemini-3.5-flash-lite",
             input=[
-                {"type": "text", "text": "Perform accurate OCR on this image. Extract all visible text exactly as it appears."},
+                {"type": "text", "text": "You are a receipt scanner. If the image is not a receipt: write an error message. If the image IS a receipt: Perform accurate OCR on this image. Extract all visible text exactly as it appears."},
                 {
                     "type": "image",
                     "data": base64.b64encode(contents).decode('utf-8'),
@@ -170,33 +171,29 @@ async def upload_image(request: Request, file: UploadFile = File(...)):
             response_format={
                 "type": "text",
                 "mime_type": "application/json",
-                "schema": Receipt.model_json_schema()
+                "schema": Response.model_json_schema()
             },
         )
 
         print(response.output_text)
-        structured_receipt_output: Receipt = Receipt.model_validate_json(response.output_text)
+        structured_receipt_output: Response = Response.model_validate_json(response.output_text)
+        
+        ocr_text = structured_receipt_output.error if not structured_receipt_output.isReceipt else json.dumps(structured_receipt_output.receipts.model_dump_json())
 
-        mongo_doc = structured_receipt_output.model_dump(by_alias=True)
+        # mongo_doc = structured_receipt_output.model_dump(by_alias=True)
 
-        print("MONGOOO", mongo_doc)
-        json_ver = json.loads(response.output_text)
-        print(json_ver)
-        final_string = json_ver["company"] + "\n"
-        for item in json_ver['listOfPurchasedItems']:
-            line_str = f"x{item['quantity']} {item['name']}  £{item['price']}"
-            final_string = final_string + line_str + "\n"
-        final_string = final_string + "£" + json_ver["total_price"]
+        # print("MONGOOO", mongo_doc)
+        # json_ver = json.loads(response.output_text)
+        # print(json_ver)
 
+        # new_user_doc = {
+        #       "company": structured_receipt_output.company,
+        #       "total_price": structured_receipt_output.total_price,
+        #       # "date_on_receipt": json_ver["date_on_receipt"],
+        #       "customer_id": '6af960454d16a4c2e1913d19',
+        # }
 
-        new_user_doc = {
-              "company": structured_receipt_output.company,
-              "total_price": structured_receipt_output.total_price,
-              # "date_on_receipt": json_ver["date_on_receipt"],
-              "customer_id": '6af960454d16a4c2e1913d19',
-        }
-
-        insert_result = await users_collection.insert_one(new_user_doc)
+        # insert_result = await users_collection.insert_one(new_user_doc)
 
     except Exception as e:
         raise HTTPException(
@@ -208,5 +205,5 @@ async def upload_image(request: Request, file: UploadFile = File(...)):
         "content_type": file.content_type,
         "size_bytes": len(contents),
         "message": f"Successfully extracted text from {file.filename}",
-        "ocr_text": final_string,
+        "ocr_text": ocr_text,
     }
