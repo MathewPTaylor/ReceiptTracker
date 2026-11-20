@@ -1,0 +1,142 @@
+.home-panel {
+  max-width: 440px;
+  margin: 32px auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.home-title {
+  margin-top: 0;
+}
+
+.home-file-input {
+  display: none;
+}
+
+.home-capture-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.home-camera-button {
+  flex: 1;
+  min-height: 48px;
+  padding: 12px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.home-gallery-button {
+  flex: 1;
+  min-height: 48px;
+  padding: 12px;
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.home-upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.home-preview {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.home-preview-image {
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  display: block;
+}
+
+.home-preview-details {
+  padding: 10px;
+  font-size: 13px;
+  color: #475569;
+  border-top: 1px solid #e2e8f0;
+}
+
+.home-upload-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.home-submit {
+  flex: 2;
+  min-height: 48px;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.home-submit:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.home-clear-button {
+  flex: 1;
+  min-height: 48px;
+  background: #fff;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.home-error {
+  margin-top: 16px;
+  padding: 12px;
+  background: #fef2f2;
+  color: #b91c1c;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.home-result {
+  margin-top: 16px;
+  padding: 14px;
+  background: #f0fdf4;
+  color: #166534;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.home-result-message {
+  margin: 6px 0 8px;
+}
+
+.home-ocr-text {
+  margin-top: 8px;
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  white-space: pre-wrap;
+  color: #0f172a;
+  font-family: monospace;
+  font-size: 13px;
+  max-height: 200px;
+  overflow-y: auto;
+}

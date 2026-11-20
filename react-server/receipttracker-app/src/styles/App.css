@@ -17,3 +17,11 @@ input {
 button[type="submit"] {
   padding: 8px 16px;
 }
+
+.app-section {
+  display: block;
+}
+
+.app-section--hidden {
+  display: none;
+}

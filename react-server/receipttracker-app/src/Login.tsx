@@ -1,4 +1,5 @@
 import { useState, SyntheticEvent, ChangeEvent } from 'react';
+import './styles/login.css';
 
 // 1. Interfaces matching a standard FastAPI login endpoint
 interface LoginRequest {
@@ -84,12 +85,12 @@ function Login({ onLoginSuccess }: LoginProps) {
   };
 
   return (
-    <div style={{ maxWidth: '380px', margin: '80px auto', fontFamily: 'sans-serif', padding: '24px', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
-      <h2 style={{ marginTop: 0, marginBottom: '20px' }}>Log In</h2>
+    <div className="login-panel">
+      <h2 className="login-title">Log In</h2>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <label htmlFor="email" style={{ fontSize: '14px', fontWeight: 600 }}>
+      <form onSubmit={handleSubmit} className="login-form">
+        <div className="login-field">
+          <label htmlFor="email" className="login-label">
             Email
           </label>
           <input
@@ -100,15 +101,15 @@ function Login({ onLoginSuccess }: LoginProps) {
             value={email}
             onChange={handleEmailChange}
             placeholder="you@example.com"
-            style={{ padding: '10px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+            className="login-input"
           />
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <label htmlFor="password" style={{ fontSize: '14px', fontWeight: 600 }}>
+        <div className="login-field">
+          <label htmlFor="password" className="login-label">
             Password
           </label>
-          <div style={{ display: 'flex', gap: '6px' }}>
+          <div className="login-password-row">
             <input
               id="password"
               type={showPassword ? 'text' : 'password'}
@@ -117,12 +118,12 @@ function Login({ onLoginSuccess }: LoginProps) {
               value={password}
               onChange={handlePasswordChange}
               placeholder="Enter password"
-              style={{ padding: '10px', flex: 1, borderRadius: '4px', border: '1px solid #cbd5e1' }}
+              className="login-password-input"
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              style={{ padding: '0 10px', borderRadius: '4px', border: '1px solid #cbd5e1', background: '#f8fafc', cursor: 'pointer' }}
+              className="login-toggle"
             >
               {showPassword ? 'Hide' : 'Show'}
             </button>
@@ -132,31 +133,22 @@ function Login({ onLoginSuccess }: LoginProps) {
         <button
           type="submit"
           disabled={loading}
-          style={{
-            marginTop: '6px',
-            padding: '10px',
-            borderRadius: '4px',
-            border: 'none',
-            background: loading ? '#94a3b8' : '#2563eb',
-            color: '#fff',
-            fontWeight: 600,
-            cursor: loading ? 'not-allowed' : 'pointer',
-          }}
+          className="login-submit"
         >
           {loading ? 'Signing in...' : 'Log In'}
         </button>
       </form>
 
       {error && (
-        <div role="alert" style={{ marginTop: '16px', padding: '10px', background: '#fef2f2', color: '#b91c1c', borderRadius: '4px', fontSize: '14px' }}>
+        <div role="alert" className="login-error">
           {error}
         </div>
       )}
 
       {token && (
-        <div style={{ marginTop: '16px', padding: '12px', background: '#f0fdf4', color: '#166534', borderRadius: '4px', fontSize: '14px', wordBreak: 'break-all' }}>
+        <div className="login-success">
           <strong>Authenticated!</strong>
-          <p style={{ margin: '6px 0 0' }}>Token: {token}</p>
+          <p className="login-token">Token: {token}</p>
         </div>
       )}
     </div>

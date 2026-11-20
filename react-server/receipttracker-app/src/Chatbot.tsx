@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { BottomNavbar } from './components/Navbar.tsx';
-import './chatbot.css';
+import './styles/chatbot.css';
 
 interface Message {
   id: string;
@@ -69,7 +69,7 @@ export const ChatbotPage: React.FC = () => {
     <div className="chatbot-page">
       <header className="chatbot-header">
         <div className="chatbot-header__status-dot" />
-        <h1 className="chatbot-header__title" style={{fontSize: "1.35rem"}}>Bei</h1>
+        <h1 className="chatbot-header__title">Bei</h1>
       </header>
 
       <main className="chatbot-messages">

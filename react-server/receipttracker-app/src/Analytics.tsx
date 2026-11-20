@@ -1,4 +1,5 @@
 import React from 'react';
+import './styles/analytics.css';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -147,29 +148,23 @@ export const Analytics: React.FC<StockChartProps> = ({
 
   return (
     <div
-      style={{
-        backgroundColor: '#ffffff',
-        border: '1px solid #e2e5de',
-        borderRadius: '0.375rem',
-        padding: '1rem',
-        fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-      }}
+      className="analytics-card"
     >
-      <div style={{ marginBottom: '0.75rem' }}>
-        <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#6b7265', letterSpacing: '0.04em' }}>
+      <div className="analytics-summary">
+        <div className="analytics-ticker">
           {ticker}
         </div>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
-          <span style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1f241d' }}>
+        <div className="analytics-prices">
+          <span className="analytics-current-price">
             ${currentPrice.toFixed(2)}
           </span>
-          <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#3b4d2b' }}>
+          <span className="analytics-price-change">
             +{priceChange.toFixed(2)} (+{percentChange}%)
           </span>
         </div>
       </div>
 
-      <div style={{ height: '260px', width: '100%'}}>
+      <div className="analytics-chart">
         <Line data={data} options={options} />
       </div>
     </div>

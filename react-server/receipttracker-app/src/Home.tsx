@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, ChangeEvent, SyntheticEvent } from 'react';
+import './styles/home.css';
 
 interface UploadResponse {
   filename: string;
@@ -89,8 +90,8 @@ export default function ImageCapture() {
   };
 
   return (
-    <div style={{ maxWidth: '440px', margin: '32px auto', padding: '20px', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }}>
-      <h2 style={{ marginTop: 0 }}>Capture or Upload Image for OCR</h2>
+    <div className="home-panel">
+      <h2 className="home-title">Capture or Upload Image for OCR</h2>
 
       <input
         ref={cameraInputRef}
@@ -98,7 +99,7 @@ export default function ImageCapture() {
         accept="image/*"
         capture="environment"
         onChange={handleFileChange}
-        style={{ display: 'none' }}
+        className="home-file-input"
       />
 
       <input
@@ -106,17 +107,14 @@ export default function ImageCapture() {
         type="file"
         accept="image/*,.heic,.heif"
         onChange={handleFileChange}
-        style={{ display: 'none' }}
+        className="home-file-input"
       />
 
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+      <div className="home-capture-actions">
         <button
           type="button"
           onClick={() => cameraInputRef.current?.click()}
-          style={{
-            flex: 1, minHeight: '48px', padding: '12px', background: '#2563eb',
-            color: '#fff', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 600, cursor: 'pointer',
-          }}
+          className="home-camera-button"
         >
           Take Photo
         </button>
@@ -124,36 +122,30 @@ export default function ImageCapture() {
         <button
           type="button"
           onClick={() => galleryInputRef.current?.click()}
-          style={{
-            flex: 1, minHeight: '48px', padding: '12px', background: '#f1f5f9',
-            color: '#0f172a', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '16px', fontWeight: 600, cursor: 'pointer',
-          }}
+          className="home-gallery-button"
         >
           Choose File
         </button>
       </div>
 
       {previewUrl && selectedFile && (
-        <form onSubmit={handleUpload} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-          <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', background: '#f8fafc' }}>
+        <form onSubmit={handleUpload} className="home-upload-form">
+          <div className="home-preview">
             <img
               src={previewUrl}
               alt="Selected preview"
-              style={{ width: '100%', maxHeight: '320px', objectFit: 'contain', display: 'block' }}
+              className="home-preview-image"
             />
-            <div style={{ padding: '10px', fontSize: '13px', color: '#475569', borderTop: '1px solid #e2e8f0' }}>
+            <div className="home-preview-details">
               <strong>{selectedFile.name}</strong> ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div className="home-upload-actions">
             <button
               type="submit"
               disabled={uploading}
-              style={{
-                flex: 2, minHeight: '48px', background: uploading ? '#94a3b8' : '#16a34a',
-                color: '#fff', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: 600, cursor: uploading ? 'not-allowed' : 'pointer',
-              }}
+              className="home-submit"
             >
               {uploading ? 'Processing OCR...' : 'Run Gemini OCR'}
             </button>
@@ -162,10 +154,7 @@ export default function ImageCapture() {
               type="button"
               onClick={handleClear}
               disabled={uploading}
-              style={{
-                flex: 1, minHeight: '48px', background: '#fff', color: '#dc2626',
-                border: '1px solid #fecaca', borderRadius: '8px', fontSize: '16px', cursor: 'pointer',
-              }}
+              className="home-clear-button"
             >
               Clear
             </button>
@@ -174,17 +163,17 @@ export default function ImageCapture() {
       )}
 
       {error && (
-        <div role="alert" style={{ marginTop: '16px', padding: '12px', background: '#fef2f2', color: '#b91c1c', borderRadius: '8px', fontSize: '14px' }}>
+        <div role="alert" className="home-error">
           {error}
         </div>
       )}
 
       {result && (
-        <div style={{ marginTop: '16px', padding: '14px', background: '#f0fdf4', color: '#166534', borderRadius: '8px', fontSize: '14px' }}>
+        <div className="home-result">
           <strong>OCR Complete!</strong>
-          <p style={{ margin: '6px 0 8px' }}>{result.message}</p>
+          <p className="home-result-message">{result.message}</p>
           {result.ocr_text && (
-            <div style={{ marginTop: '8px', background: '#ffffff', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1', whiteSpace: 'pre-wrap', color: '#0f172a', fontFamily: 'monospace', fontSize: '13px', maxHeight: '200px', overflowY: 'auto' }}>
+            <div className="home-ocr-text">
               {result.ocr_text}
             </div>
           )}

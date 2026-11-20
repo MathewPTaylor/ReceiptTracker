@@ -1,4 +1,5 @@
 import { useState, SyntheticEvent, ChangeEvent } from 'react';
+import './styles/signup.css';
 // import { Link, useNavigate } from 'react-router';
 
 interface SignupRequest {
@@ -107,20 +108,13 @@ export default function Signup() {
 
   return (
     <div
-      style={{
-        maxWidth: '380px',
-        margin: '60px auto',
-        fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-        padding: '24px',
-        border: '1px solid #e2e8f0',
-        borderRadius: '8px',
-      }}
+      className="signup-panel"
     >
-      <h2 style={{ marginTop: 0, marginBottom: '20px' }}>Create Account</h2>
+      <h2 className="signup-title">Create Account</h2>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <label htmlFor="name" style={{ fontSize: '14px', fontWeight: 600 }}>
+      <form onSubmit={handleSubmit} className="signup-form">
+        <div className="signup-field">
+          <label htmlFor="name" className="signup-label">
             Full Name
           </label>
           <input
@@ -131,12 +125,12 @@ export default function Signup() {
             value={name}
             onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
             placeholder="Jane Doe"
-            style={{ padding: '10px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '16px' }}
+            className="signup-input"
           />
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <label htmlFor="email" style={{ fontSize: '14px', fontWeight: 600 }}>
+        <div className="signup-field">
+          <label htmlFor="email" className="signup-label">
             Email
           </label>
           <input
@@ -147,15 +141,15 @@ export default function Signup() {
             value={email}
             onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             placeholder="you@example.com"
-            style={{ padding: '10px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '16px' }}
+            className="signup-input"
           />
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <label htmlFor="password" style={{ fontSize: '14px', fontWeight: 600 }}>
+        <div className="signup-field">
+          <label htmlFor="password" className="signup-label">
             Password
           </label>
-          <div style={{ display: 'flex', gap: '6px' }}>
+          <div className="signup-password-row">
             <input
               id="password"
               type={showPassword ? 'text' : 'password'}
@@ -165,26 +159,20 @@ export default function Signup() {
               value={password}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               placeholder="At least 8 characters"
-              style={{ padding: '10px', flex: 1, borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '16px' }}
+              className="signup-password-input"
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              style={{
-                padding: '0 10px',
-                borderRadius: '4px',
-                border: '1px solid #cbd5e1',
-                background: '#f8fafc',
-                cursor: 'pointer',
-              }}
+              className="signup-toggle"
             >
               {showPassword ? 'Hide' : 'Show'}
             </button>
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <label htmlFor="confirmPassword" style={{ fontSize: '14px', fontWeight: 600 }}>
+        <div className="signup-field">
+          <label htmlFor="confirmPassword" className="signup-label">
             Confirm Password
           </label>
           <input
@@ -195,24 +183,14 @@ export default function Signup() {
             value={confirmPassword}
             onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
             placeholder="Re-enter password"
-            style={{ padding: '10px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '16px' }}
+            className="signup-input"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          style={{
-            marginTop: '6px',
-            padding: '12px',
-            borderRadius: '4px',
-            border: 'none',
-            background: loading ? '#94a3b8' : '#2563eb',
-            color: '#fff',
-            fontSize: '16px',
-            fontWeight: 600,
-            cursor: loading ? 'not-allowed' : 'pointer',
-          }}
+          className="signup-submit"
         >
           {loading ? 'Creating account...' : 'Sign Up'}
         </button>
@@ -221,22 +199,15 @@ export default function Signup() {
       {error && (
         <div
           role="alert"
-          style={{
-            marginTop: '16px',
-            padding: '10px',
-            background: '#fef2f2',
-            color: '#b91c1c',
-            borderRadius: '4px',
-            fontSize: '14px',
-          }}
+          className="signup-error"
         >
           {error}
         </div>
       )}
 
-      <p style={{ marginTop: '18px', marginBottom: 0, fontSize: '14px', color: '#475569', textAlign: 'center' }}>
+      <p className="signup-footer">
         Already have an account?{' '}
-        {/* <Link to="/login" style={{ color: '#2563eb', fontWeight: 600, textDecoration: 'none' }}>
+        {/* <Link to="/login" className="signup-login-link">
           Log In
         </Link> */}
       </p>
