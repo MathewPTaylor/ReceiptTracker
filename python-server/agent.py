@@ -186,6 +186,12 @@ state["messages"] = [("user", query + ". DO NOT USE ANY TOOLS.")]
 response = graph.invoke(state)
 print(response)
 
+def zero_shot_query(query: str):
+    state = {"messages": [], "next": None}
+    state["messages"] = [("user", query + ". DO NOT USE ANY TOOLS.")]
+    response = graph.invoke(state)
+    return response.content[0]["text"]
+
 # from IPython.display import Image, display
 #
 # try:

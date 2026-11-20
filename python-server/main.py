@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from google import genai
 from datetime import datetime, timezone
 from pwdlib import PasswordHash
+from agent import zero_shot_query
 
 # Load environment variables
 load_dotenv()
@@ -132,6 +133,11 @@ async def signup(payload: SignupRequest, request: Request):
     }
 
 
+@app.get("/api/chat")
+async def chat_response(query: str, request: Request):
+    response = zero_shot_query(query)
+    return {"response" : response}
+
 
 
 # Initialize the Gemini client (automatically picks up GEMINI_API_KEY from environment)
@@ -176,6 +182,12 @@ async def upload_image(request: Request, file: UploadFile = File(...)):
         print("MONGOOO", mongo_doc)
         json_ver = json.loads(response.output_text)
         print(json_ver)
+        final_string = json_ver["company"] + "\n"
+        for item in json_ver['listOfPurchasedItems']:
+            line_str = f"x{item['quantity']} {item['name']}  £{item['price']}"
+            final_string = final_string + line_str + "\n"
+        final_string = final_string + "£" + json_ver["total_price"]
+
 
         new_user_doc = {
               "company": structured_receipt_output.company,
@@ -196,5 +208,5 @@ async def upload_image(request: Request, file: UploadFile = File(...)):
         "content_type": file.content_type,
         "size_bytes": len(contents),
         "message": f"Successfully extracted text from {file.filename}",
-        "ocr_text": json.dumps(response.output_text),
+        "ocr_text": final_string,
     }
